@@ -1,5 +1,6 @@
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\appsettings.json
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Infrastructure\Security\client_rabbit.pfx
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.exe
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.deps.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.runtimeconfig.json
@@ -32,8 +33,10 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Microsoft.OpenApi.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Npgsql.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\RabbitMQ.Client.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -120,6 +123,7 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.csproj.CoreCompileInputs.cache
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.sourcelink.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\staticwebassets\msbuild.TicketsMS.Microsoft.AspNetCore.StaticWebAssets.props

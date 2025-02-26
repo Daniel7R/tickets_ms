@@ -3,6 +3,7 @@ using TicketsMS.Application.Mapping;
 using TicketsMS.Application.Services;
 using TicketsMS.Domain.Enums;
 using TicketsMS.Infrastructure.Data;
+using TicketsMS.Infrastructure.EventBus;
 using TicketsMS.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,11 +23,15 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
-var app = builder.Build();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
-Console.WriteLine(TicketStatus.CANCELED);
-Console.WriteLine(TicketStatus.CANCELED.GetType());
-Console.WriteLine(TicketStatus.CANCELED.ToString().Equals("CANCELED"));
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+builder.Services.AddSingleton<IEventBusConsumer, EventBusConsumer>();
+builder.Services.AddHostedService<EventBusConsumer>();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

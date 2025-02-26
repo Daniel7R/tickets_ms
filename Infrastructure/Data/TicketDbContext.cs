@@ -35,6 +35,10 @@ namespace TicketsMS.Infrastructure.Data
                 .HasForeignKey<TicketSales>(ts => ts.IdTicket)
                 .IsRequired();
 
+            modelBuilder.Entity<Tickets>()
+                .HasIndex(t => t.Code)
+                .IsUnique();
+
         }
     }
 }

@@ -10,5 +10,7 @@ namespace TicketsMS.Domain.Enums
         USED,
         [EnumMember(Value = "CANCELED")]
         CANCELED,
+        [EnumMember(Value = "GENERATED")]
+        GENERATED
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using TicketsMS.Application.DTOs.Request;
+using TicketsMS.Domain.Entities;
 
 namespace TicketsMS.Application.Mapping
 {
@@ -6,6 +8,7 @@ namespace TicketsMS.Application.Mapping
     {
         public MapperProfile()
         {
+            CreateMap<TicketRequestDTO, Tickets>().ReverseMap();
         }
     }
 }
