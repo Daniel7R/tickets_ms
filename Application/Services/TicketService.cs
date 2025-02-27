@@ -46,7 +46,6 @@ namespace TicketsMS.Application.Services
 
         public Tickets GenerateTicketViewer(int idMatch, bool isFree, decimal price)
         {
-            if (idMatch == null) throw new BusinessRuleException("idMatch for viewer ticket can not be null");
             if (!isFree && price == 0) throw new BusinessRuleException("Price must be higher than 0");
             var ticket = new Tickets
             {

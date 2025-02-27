@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TicketsMS</name>
+    </assembly>
+    <members>
+        <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:TicketsMS.Infrastructure.EventBus.EventBusConsumer.RegisterQueueHandler``2(System.String,System.Func{``0,System.Threading.Tasks.Task{``1}})">
+            <summary>
+                Register a Request/Reply queue manager
+            </summary>
+            <typeparam name="TRequest"></typeparam>
+            <typeparam name="TResponse"></typeparam>
+            <param name="queueName"></param>
+            <param name="handler"></param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:TicketsMS.Infrastructure.EventBus.EventBusConsumer.RegisterEventHandlerAsync``1(System.String,System.Func{``0,System.Threading.Tasks.Task})">
+            <summary>
+                Register an async Event queue manager
+            </summary>
+            <typeparam name="TEvent"></typeparam>
+            <param name="queueName"></param>
+            <param name="handler"></param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="T:TicketsMS.Migrations.init">
+            <inheritdoc />
+        </member>
+        <member name="M:TicketsMS.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:TicketsMS.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:TicketsMS.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

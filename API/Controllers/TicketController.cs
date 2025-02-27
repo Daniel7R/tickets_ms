@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel;
 using TicketsMS.Application.Interfaces;
+using TicketsMS.Domain.Enums;
 
 namespace TicketsMS.API.Controllers
 {
@@ -16,9 +19,26 @@ namespace TicketsMS.API.Controllers
         }
 
         [HttpGet]
-        [Route("get-available-tickets")]
-        public Task<IActionResult> GetAvailableTickets()
+        [Route("tickets")]
+        [Description("This endpoint returns tickets according ticket types")]
+        public Task<IActionResult> GetAvailableTickets([FromQuery, BindRequired] TicketType ticketType)
         {
+            //get availableTicket
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet]
+        [Route("tickets/{userId}")]
+        public Task<IActionResult> GetTicketByUser(int userId)
+        {
+
+            //validate if the user is equals to the provided in token
             throw new NotImplementedException();
         }
     }
