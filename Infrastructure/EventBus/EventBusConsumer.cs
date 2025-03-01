@@ -93,7 +93,7 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate participant tickets for tournament id {request.IdTournament}");
                     using var scope = _serviceScopeFactory.CreateScope();
-                    var ticketService = scope.ServiceProvider.GetRequiredService<ITicketService>();
+                    var ticketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
                     var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
 
                     using var transaction = await dbContext.Database.BeginTransactionAsync();
@@ -106,7 +106,7 @@ namespace TicketsMS.Infrastructure.EventBus
                         var tasks = Enumerable.Range(0, quantity)
                             .Select(async _ =>
                             {
-                                var ticketResponse = await ticketService.GenerateTicketParticipant(request.IdTournament, request.IsFree, priceTicket);
+                                var ticketResponse = await ticketService.GenerateTicket( TicketType.PARTICIPANT, request.IdTournament, request.IsFree, priceTicket);
                                 dbContext.Tickets.Add(ticketResponse);
                             }).ToList();
                         await Task.WhenAll(tasks);

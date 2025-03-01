@@ -24,6 +24,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddNpgsql<TicketDbContext>(builder.Configuration.GetConnectionString("dbConnectionTickets"));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IGenerateTicket, TicketService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 

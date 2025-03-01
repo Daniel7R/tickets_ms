@@ -6,6 +6,7 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.runtimeconfig.json
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.pdb
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.xml
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Humanizer.dll
@@ -135,8 +136,7 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.csproj.Up2Date
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\refint\TicketsMS.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.xml
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.pdb
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.genruntimeconfig.cache
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\ref\TicketsMS.dll
-C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\TicketsMS.xml
-C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.xml

@@ -12,6 +12,16 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:TicketsMS.Application.Services.TicketService.GenerateTicketViewer(System.Int32,System.Boolean,System.Decimal)">
+            <summary>
+                This methods 
+            </summary>
+            <param name="idMatch"></param>
+            <param name="isFree"></param>
+            <param name="price"></param>
+            <returns></returns>
+            <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
+        </member>
         <member name="M:TicketsMS.Infrastructure.EventBus.EventBusConsumer.RegisterQueueHandler``2(System.String,System.Func{``0,System.Threading.Tasks.Task{``1}})">
             <summary>
                 Register a Request/Reply queue manager

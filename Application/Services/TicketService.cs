@@ -12,17 +12,51 @@ using TicketsMS.Infrastructure.Repository;
 
 namespace TicketsMS.Application.Services
 {
-    public class TicketService: ITicketService
+    public class TicketService: ITicketService, IGenerateTicket
     {
         private readonly IRepository<Tickets> _ticketRepository;
         private readonly IMapper _mapper;
         private const string TICKET_PREFIX = "TKT";
         private const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int SIZE_CHAR_CODE = 6;
+
         public TicketService(IRepository<Tickets> ticketRepository, IMapper mapper)
         {
             _ticketRepository = ticketRepository;
             _mapper = mapper;
+        }
+
+        public Task<Tickets> GenerateTicket(TicketType type,int idEvent, bool isFree, decimal price)
+        {
+            Tickets ticket;
+
+            if (type == TicketType.PARTICIPANT)
+            {
+                ticket = new Tickets{
+                    IdTournament = idEvent,
+                    Code = GenerateTicketCode(),
+                    Type = TicketType.PARTICIPANT,
+                    Status = TicketStatus.GENERATED,
+                };
+            }
+            else
+            {
+                ticket = new Tickets
+                {
+                    IdMatch = idEvent,
+                    Code = GenerateTicketCode(),
+                    Type = TicketType.VIEWER,
+                    Status = TicketStatus.GENERATED
+                };
+
+            }
+
+            if (!isFree && price > 0)
+            {
+                ticket.Price = price;
+            }
+
+            return Task.FromResult(ticket);
         }
 
         public Task<Tickets> GenerateTicketParticipant(int idTournament, bool isFree, decimal price)
@@ -44,6 +78,14 @@ namespace TicketsMS.Application.Services
             return Task.FromResult(ticket);
         }
 
+        /// <summary>
+        ///     This methods 
+        /// </summary>
+        /// <param name="idMatch"></param>
+        /// <param name="isFree"></param>
+        /// <param name="price"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessRuleException"></exception>
         public Tickets GenerateTicketViewer(int idMatch, bool isFree, decimal price)
         {
             if (!isFree && price == 0) throw new BusinessRuleException("Price must be higher than 0");
@@ -63,7 +105,7 @@ namespace TicketsMS.Application.Services
             Span<char> builderCode = stackalloc char[SIZE_CHAR_CODE];
             Span<byte> randomBytes = stackalloc byte[SIZE_CHAR_CODE];
 
-            string timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            string timestamp = DateTime.UtcNow.AddHours(5).ToString("yyyyMMddHHmmss");
 
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
