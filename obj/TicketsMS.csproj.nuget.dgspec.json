@@ -60,9 +60,17 @@
               "target": "Package",
               "version": "[9.0.1, )"
             },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.0.0, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.20.1, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.16.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -79,6 +87,14 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.4.3, )"
             }
           },
           "imports": [
