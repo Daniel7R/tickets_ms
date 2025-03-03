@@ -12,6 +12,41 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="P:TicketsMS.Application.Messages.Request.EmailNotificationRequest.IdUser">
+            <summary>
+            With id can get email
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.Messages.Request.EmailNotificationRequest.Subject">
+            <summary>
+             Email subject
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.Messages.Request.EmailNotificationRequest.Body">
+            <summary>
+             Body of the email
+            </summary>
+        </member>
+        <member name="T:TicketsMS.Application.Messages.Request.GenerateTicketSale">
+            <summary>
+               dto to handle Ticket Sale Queue
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.Messages.Request.GenerateTicketSale.IdTransaction">
+            <summary>
+              Id of the transaction
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.Messages.Request.GenerateTicketSale.IdUser">
+            <summary>
+             Id of the user
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.Messages.Request.GenerateTicketSale.IdTicket">
+            <summary>
+             Id of the ticket
+            </summary>
+        </member>
         <member name="M:TicketsMS.Application.Services.TicketService.GenerateTicketViewer(System.Int32,System.Boolean,System.Decimal)">
             <summary>
                 This methods 
@@ -41,16 +76,16 @@
             <param name="handler"></param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="T:TicketsMS.Migrations.init">
+        <member name="T:TicketsMS.Migrations.init1">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init1.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init1.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:TicketsMS.Migrations.init1.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>
