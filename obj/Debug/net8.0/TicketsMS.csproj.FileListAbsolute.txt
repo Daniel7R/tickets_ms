@@ -225,3 +225,5 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.pdb
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\TicketsMS.genruntimeconfig.cache
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\obj\Debug\net8.0\ref\TicketsMS.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\DotNetEnv.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Sprache.dll

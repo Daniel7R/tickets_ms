@@ -6,9 +6,12 @@ using TicketsMS.Infrastructure.Data;
 using TicketsMS.Infrastructure.EventBus;
 using TicketsMS.Infrastructure.Repository;
 using TicketsMS.Infrastructure.Swagger;
+using DotNetEnv;
+using TicketsMS.Application.Handlers;
 
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Configuration.AddEnvironmentVariables();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -33,6 +36,7 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+builder.Services.AddScoped<GenerateTicketsHandler>();
 builder.Services.AddSingleton<IEventBusConsumer, EventBusConsumer>();
 builder.Services.AddHostedService<EventBusConsumer>();
 

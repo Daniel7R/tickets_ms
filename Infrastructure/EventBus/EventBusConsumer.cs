@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using TicketsMS.Application.DTOs.Request;
+using TicketsMS.Application.Handlers;
 using TicketsMS.Application.Interfaces;
 using TicketsMS.Application.Messages.Request;
 using TicketsMS.Application.Messages.Response;
@@ -96,6 +97,9 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate participant tickets for tournament id {request.IdTournament}");
                     using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
+                    await handler.GenerateTicketsParticipantsAsync(request);
+                    /*
                     var ticketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
                     var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
 
@@ -121,18 +125,23 @@ namespace TicketsMS.Infrastructure.EventBus
                     {
                         _logger.LogError($"Error generation tickets: {ex.Message}");
                         await transaction.RollbackAsync();
-                    }
+                    }*/
                 });
                 //Queue to manage ticket sale participant
                 await RegisterEventHandlerAsync<GenerateTicketSale>(Queues.SELL_TICKET_PARTICIPANT, async (request) =>
                 {
                     _logger.LogInformation($"Received request to generate ticket sale participant for user {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
 
+                    await handler.GenerateTicketSale(request);
+
+                    /*
                     var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
                     var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
                     var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
 
+                    
                     using var transaction = await dbContext.Database.BeginTransactionAsync();
 
                     try
@@ -166,14 +175,18 @@ namespace TicketsMS.Infrastructure.EventBus
                     {
                         _logger.LogError($"Error assigning ticket sale: {ex.Message}");
                         await transaction.RollbackAsync();
-                    }
+                    }*/
                 });
 
                 await RegisterEventHandlerAsync<GenerateTicketSaleViewer>(Queues.SELL_TICKET_VIEWER, async (request) =>
                 {
                     _logger.LogInformation($"Received request to generate ticket viewer and ticket sale {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
 
+                    await handler.GenerateTicketSaleViewer(request);
+
+                    /*
                     var generateTicketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
                     var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
                     var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
@@ -212,7 +225,7 @@ namespace TicketsMS.Infrastructure.EventBus
 
                         _logger.LogError($"Error assigning ticket sale: {ex.Message}");
                         await transaction.RollbackAsync();
-                    }
+                    }*/
                 });
             });
 
@@ -223,6 +236,8 @@ namespace TicketsMS.Infrastructure.EventBus
 
                 var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
                 var ticketInfo = await ticketService.GetByIdAsync(idInfo);
+
+                if(ticketInfo == null) return new GetTicketInfoResponse();
 
                 return new GetTicketInfoResponse
                 {
