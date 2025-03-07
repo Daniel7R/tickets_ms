@@ -56,7 +56,7 @@ namespace TicketsMS.Application.Handlers
                     Subject = "Ticket Info",
                     Body = $"This is the body viewer with the code: {ticket.Code}"
                 };
-                await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION);
+                await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION_SALE);
             }
             catch (Exception ex)
             {
@@ -92,10 +92,10 @@ namespace TicketsMS.Application.Handlers
                 var email = new EmailNotificationRequest
                 {
                     IdUser = request.IdUser,
-                    Subject = "Ticket Info",
-                    Body = $"This is the body with the code: {ticketById.Code}"
+                    Subject = "Ticket Information",
+                    Body = $"👋 Hello!\\n\\n\" +\r\n           $\"Here is your ticket code: **{{ticketById.Code}}** 🎫\\n\\n\" +\r\n           $\"If you need any assistance, feel free to reach out! 😊\\n\\n\" +\r\n           $\"Best regards,\\n💼 Support Team"
                 };
-                await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION);
+                await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION_SALE);
             }
             catch (Exception ex)
             {

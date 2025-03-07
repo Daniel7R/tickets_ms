@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -88,7 +89,7 @@ namespace TicketsMS.Infrastructure.EventBus
             RegisterHandlers();
         }
 
-        private void RegisterHandlers()
+        private async void RegisterHandlers()
         {
             _ = Task.Run(async () =>
             {
@@ -243,8 +244,25 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     IdTicket = ticketInfo.Id,
                     Status = ticketInfo.Status,
-                    Type = ticketInfo.Type
+                    Type = ticketInfo.Type,
+                    IdTournament = ticketInfo?.IdTournament?? 0,
                 };
+            });
+
+            RegisterQueueHandler<GetTicketUserTournament, bool>(Queues.VALIDATE_USER_HAS_TICKETS_TOURNAMENT, async (payload) =>
+            {
+                _logger.LogInformation($"Received request to validate user has tickets for tournament");
+                using var scope = _serviceScopeFactory.CreateScope();
+
+                var context = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
+                var ticketSalesInfo = await (from ts in context.TicketSales
+                                             join t in context.Tickets on ts.IdTicket equals t.Id
+                                             where ts.IdUser == payload.IdUser && t.IdTournament == payload.IdTournament 
+                                             select t).ToListAsync();
+                //if user has already ticket sales confirmed for tournament
+                if (ticketSalesInfo.Any()) return true;
+
+                return false;
 
             });
         }

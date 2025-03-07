@@ -18,10 +18,16 @@ namespace TicketsMS.API.Controllers
             _ticketService = ticketService;
         }
 
+        /// <summary>
+        /// Get tickets by id tournament
+        /// </summary>
+        /// <param name="ticketType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("tickets")]
         [Description("This endpoint returns tickets according ticket types")]
-        public Task<IActionResult> GetAvailableTickets([FromQuery, BindRequired] TicketType ticketType)
+        public Task<IActionResult> GetAvailableTickets([FromQuery] int idTournament)
         {
             //get availableTicket
             throw new NotImplementedException();

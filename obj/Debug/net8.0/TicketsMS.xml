@@ -4,6 +4,14 @@
         <name>TicketsMS</name>
     </assembly>
     <members>
+        <member name="M:TicketsMS.API.Controllers.TicketController.GetAvailableTickets(System.Int32)">
+            <summary>
+            Get tickets by id tournament
+            </summary>
+            <param name="ticketType"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
             <summary>
             
@@ -76,16 +84,16 @@
             <param name="handler"></param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="T:TicketsMS.Migrations.init1">
+        <member name="T:TicketsMS.Migrations.init">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:TicketsMS.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

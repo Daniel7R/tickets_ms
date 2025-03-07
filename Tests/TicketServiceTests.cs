@@ -8,128 +8,131 @@ using TicketsMS.Infrastructure.Repository;
 using TicketsMS.Application.DTOs.Response;
 using Moq;
 using Xunit;
-
-public class TicketServiceTests
+namespace TicketsMS.Tests
 {
-    private readonly Mock<IRepository<Tickets>> _mockTicketRepository;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly TicketService _ticketService;
 
-    public TicketServiceTests()
+    public class TicketServiceTests
     {
-        _mockTicketRepository = new Mock<IRepository<Tickets>>();
-        _mockMapper = new Mock<IMapper>();
-        _ticketService = new TicketService(_mockTicketRepository.Object, _mockMapper.Object);
-    }
+        private readonly Mock<IRepository<Tickets>> _mockTicketRepository;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly TicketService _ticketService;
 
-    [Fact]
-    public async Task GenerateTicket_ShouldCreateParticipantTicket_WhenTypeIsParticipant()
-    {
-        // arrange
-        int eventId = 1;
-        bool isFree = true;
-        decimal price = 0;
+        public TicketServiceTests()
+        {
+            _mockTicketRepository = new Mock<IRepository<Tickets>>();
+            _mockMapper = new Mock<IMapper>();
+            _ticketService = new TicketService(_mockTicketRepository.Object, _mockMapper.Object);
+        }
 
-        // act
-        var result = await _ticketService.GenerateTicket(TicketType.PARTICIPANT, eventId, isFree, price);
+        [Fact]
+        public async Task GenerateTicket_ShouldCreateParticipantTicket_WhenTypeIsParticipant()
+        {
+            // arrange
+            int eventId = 1;
+            bool isFree = true;
+            decimal price = 0;
 
-        // assert
-        Assert.NotNull(result);
-        Assert.Equal(TicketType.PARTICIPANT, result.Type);
-        Assert.Equal(TicketStatus.GENERATED, result.Status);
-        Assert.Equal(eventId, result.IdTournament);
-        Assert.StartsWith("TKT-", result.Code);
-    }
+            // act
+            var result = await _ticketService.GenerateTicket(TicketType.PARTICIPANT, eventId, isFree, price);
 
-    [Fact]
-    public async Task GenerateTicketParticipant_ShouldCreateTicket_WithCorrectProperties()
-    {
-        // arrange
-        int tournamentId = 10;
-        bool isFree = false;
-        decimal price = 100;
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(TicketType.PARTICIPANT, result.Type);
+            Assert.Equal(TicketStatus.GENERATED, result.Status);
+            Assert.Equal(eventId, result.IdTournament);
+            Assert.StartsWith("TKT-", result.Code);
+        }
 
-        // act
-        var result = await _ticketService.GenerateTicketParticipant(tournamentId, isFree, price);
+        [Fact]
+        public async Task GenerateTicketParticipant_ShouldCreateTicket_WithCorrectProperties()
+        {
+            // arrange
+            int tournamentId = 10;
+            bool isFree = false;
+            decimal price = 100;
 
-        // assert
-        Assert.NotNull(result);
-        Assert.Equal(TicketType.PARTICIPANT, result.Type);
-        Assert.Equal(TicketStatus.GENERATED, result.Status);
-        Assert.Equal(tournamentId, result.IdTournament);
-        Assert.Equal(price, result.Price);
-    }
+            // act
+            var result = await _ticketService.GenerateTicketParticipant(tournamentId, isFree, price);
 
-    [Fact]
-    public void GenerateTicketViewer_ShouldThrowException_IfPriceIsZeroAndNotFree()
-    {
-        // arrange
-        int matchId = 5;
-        bool isFree = false;
-        decimal price = 0;
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(TicketType.PARTICIPANT, result.Type);
+            Assert.Equal(TicketStatus.GENERATED, result.Status);
+            Assert.Equal(tournamentId, result.IdTournament);
+            Assert.Equal(price, result.Price);
+        }
 
-        // act & assert
-        var exception = Assert.Throws<BusinessRuleException>(() =>
-            _ticketService.GenerateTicketViewer(matchId, isFree, price));
+        [Fact]
+        public void GenerateTicketViewer_ShouldThrowException_IfPriceIsZeroAndNotFree()
+        {
+            // arrange
+            int matchId = 5;
+            bool isFree = false;
+            decimal price = 0;
 
-        Assert.Equal("Price must be higher than 0", exception.Message);
-    }
+            // act & assert
+            var exception = Assert.Throws<BusinessRuleException>(() =>
+                _ticketService.GenerateTicketViewer(matchId, isFree, price));
 
-    [Fact]
-    public void GenerateTicketViewer_ShouldCreateViewerTicket_WithValidData()
-    {
-        // arrange
-        int matchId = 7;
-        bool isFree = true;
-        decimal price = 0;
+            Assert.Equal("Price must be higher than 0", exception.Message);
+        }
 
-        // act
-        var result = _ticketService.GenerateTicketViewer(matchId, isFree, price);
+        [Fact]
+        public void GenerateTicketViewer_ShouldCreateViewerTicket_WithValidData()
+        {
+            // arrange
+            int matchId = 7;
+            bool isFree = true;
+            decimal price = 0;
 
-        // assert
-        Assert.NotNull(result);
-        Assert.Equal(TicketType.VIEWER, result.Type);
-        Assert.Equal(TicketStatus.GENERATED, result.Status);
-        Assert.Equal(matchId, result.IdMatch);
-    }
+            // act
+            var result = _ticketService.GenerateTicketViewer(matchId, isFree, price);
 
-    [Fact]
-    public void GenerateTicketCode_ShouldReturnValidCode()
-    {
-        // act
-        var code = _ticketService.GenerateTicketCode();
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal(TicketType.VIEWER, result.Type);
+            Assert.Equal(TicketStatus.GENERATED, result.Status);
+            Assert.Equal(matchId, result.IdMatch);
+        }
 
-        // assert
-        Assert.NotNull(code);
-        Assert.Matches(@"^TKT-\d{14}-[A-Z0-9]{6}$", code);
-    }
+        [Fact]
+        public void GenerateTicketCode_ShouldReturnValidCode()
+        {
+            // act
+            var code = _ticketService.GenerateTicketCode();
 
-    [Fact]
-    public async Task CreateTicketAsync_ShouldThrowException_WhenBothIdsAreNull()
-    {
-        // arrange
-        var invalidTicket = new Tickets { IdMatch = null, IdTournament = null };
+            // assert
+            Assert.NotNull(code);
+            Assert.Matches(@"^TKT-\d{14}-[A-Z0-9]{6}$", code);
+        }
 
-        // act & assert
-        var exception = await Assert.ThrowsAsync<BusinessRuleException>(() =>
-            _ticketService.CreateTicketAsync(invalidTicket));
+        [Fact]
+        public async Task CreateTicketAsync_ShouldThrowException_WhenBothIdsAreNull()
+        {
+            // arrange
+            var invalidTicket = new Tickets { IdMatch = null, IdTournament = null };
 
-        Assert.Equal("Both ticket and tournament id can't be null at the same time", exception.Message);
-    }
+            // act & assert
+            var exception = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+                _ticketService.CreateTicketAsync(invalidTicket));
 
-    [Fact]
-    public async Task CreateTicketAsync_ShouldCallRepository_AddAsync()
-    {
-        // arrange
-        var ticket = new Tickets { IdTournament = 1 };
+            Assert.Equal("Both ticket and tournament id can't be null at the same time", exception.Message);
+        }
 
-        _mockTicketRepository.Setup(repo => repo.AddAsync(ticket)).ReturnsAsync(It.IsAny<Tickets>());
+        [Fact]
+        public async Task CreateTicketAsync_ShouldCallRepository_AddAsync()
+        {
+            // arrange
+            var ticket = new Tickets { IdTournament = 1 };
 
-        // act
-        var result = await _ticketService.CreateTicketAsync(ticket);
+            _mockTicketRepository.Setup(repo => repo.AddAsync(ticket)).ReturnsAsync(It.IsAny<Tickets>());
 
-        // assert
-        _mockTicketRepository.Verify(repo => repo.AddAsync(ticket), Times.Once);
-        Assert.NotNull(result);
+            // act
+            var result = await _ticketService.CreateTicketAsync(ticket);
+
+            // assert
+            _mockTicketRepository.Verify(repo => repo.AddAsync(ticket), Times.Once);
+            Assert.NotNull(result);
+        }
     }
 }
