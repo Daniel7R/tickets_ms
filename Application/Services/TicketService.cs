@@ -15,13 +15,15 @@ namespace TicketsMS.Application.Services
     public class TicketService: ITicketService, IGenerateTicket
     {
         private readonly IRepository<Tickets> _ticketRepository;
+        private readonly ICustomTicketQueriesRepo _customQueriesRepo;
         private readonly IMapper _mapper;
         private const string TICKET_PREFIX = "TKT";
         private const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int SIZE_CHAR_CODE = 6;
 
-        public TicketService(IRepository<Tickets> ticketRepository, IMapper mapper)
+        public TicketService(IRepository<Tickets> ticketRepository, ICustomTicketQueriesRepo customTicketQueriesRepo,IMapper mapper)
         {
+            _customQueriesRepo = customTicketQueriesRepo;
             _ticketRepository = ticketRepository;
             _mapper = mapper;
         }
@@ -79,7 +81,7 @@ namespace TicketsMS.Application.Services
         }
 
         /// <summary>
-        ///     This methods 
+        ///     This method generates a ticket for viewer
         /// </summary>
         /// <param name="idMatch"></param>
         /// <param name="isFree"></param>
@@ -105,7 +107,7 @@ namespace TicketsMS.Application.Services
             Span<char> builderCode = stackalloc char[SIZE_CHAR_CODE];
             Span<byte> randomBytes = stackalloc byte[SIZE_CHAR_CODE];
 
-            string timestamp = DateTime.UtcNow.AddHours(5).ToString("yyyyMMddHHmmss");
+            string timestamp = DateTime.UtcNow.AddHours(-5).ToString("yyyyMMddHHmmss");
 
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
@@ -139,6 +141,21 @@ namespace TicketsMS.Application.Services
             //var ticketResponse = _mapper.Map<TicketResponseDTO>(ticketRequest);
 
             return ticketResponse;
+        }
+
+        public async Task<IEnumerable<TicketResponseDTO>> GetTicketsByStatus(TicketStatus status)
+        {
+            var tickets = await _customQueriesRepo.GetTicketsByStatus(status);
+            var response = _mapper.Map<IEnumerable<TicketResponseDTO>>(tickets);
+
+            return response;
+        }
+        public async Task<IEnumerable<TicketParticipantResponseDTO>> GetTicketsByStatusAndIdTournament(TicketStatus status, int idTournament)
+        {
+            var tickets = await _customQueriesRepo.GetTicketsByStatusAndIdTournament(status, idTournament);
+            var response = _mapper.Map<IEnumerable<TicketParticipantResponseDTO>>(tickets);
+            
+            return response;
         }
     }
 }

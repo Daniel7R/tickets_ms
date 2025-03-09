@@ -48,15 +48,29 @@ namespace TicketsMS.Application.Handlers
 
                 await _saleTicketRepo.AddAsync(ticketSale);
 
-                await _dbContext.SaveChangesAsync();
-                await transaction.CommitAsync();
                 var email = new EmailNotificationRequest
                 {
                     IdUser = request.IdUser,
-                    Subject = "Ticket Info",
-                    Body = $"This is the body viewer with the code: {ticket.Code}"
+                    Subject = "🎫 Ticket Information - Important Update!",
+                    Body = $@"
+                        <h2 style='color: #2C3E50;'>🎟️ Ticket Details</h2>
+                        <p>Dear User,</p>
+                        <p>We are pleased to inform you about your ticket update.</p>
+                        <p><strong>Your Ticket Code:</strong> <span style='color: #3498DB; font-size: 18px;'>{ticket.Code}</span></p>
+                        <p>Use this code to track your request or for further assistance.</p>
+                        <p>Best regards,</p>
+                        <p><strong>Your Support Team</strong></p>"
                 };
                 await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION_SALE);
+                // assignar role en el torneo
+                var viewerRoleReques = new AssignViewerRole
+                {
+                    IdUser = request.IdUser,
+                    IdMatch= request.IdMatch,
+                };
+                await _eventBusConsumer.PublishEventAsync<AssignViewerRole>(viewerRoleReques, Queues.Queues.ASSIGN_ROLE_VIEWER);
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
@@ -92,8 +106,13 @@ namespace TicketsMS.Application.Handlers
                 var email = new EmailNotificationRequest
                 {
                     IdUser = request.IdUser,
-                    Subject = "Ticket Information",
-                    Body = $"👋 Hello!\\n\\n\" +\r\n           $\"Here is your ticket code: **{{ticketById.Code}}** 🎫\\n\\n\" +\r\n           $\"If you need any assistance, feel free to reach out! 😊\\n\\n\" +\r\n           $\"Best regards,\\n💼 Support Team"
+                    Subject = "🎟️ Your Ticket Details Inside!",
+                    Body = $"👋 Hello,<br><br>" +
+                           $"Here is your unique ticket code: <b>{ticketById.Code}</b> 🎫<br><br>" +
+                           $"If you have any questions or need assistance, we're here to help! 😊<br><br>" +
+                           $"📩 Feel free to contact our support team anytime.<br><br>" +
+                           $"Best regards,<br>" +
+                           $"💼 <b>Support Team</b>"
                 };
                 await _eventBusConsumer.PublishEventAsync<EmailNotificationRequest>(email, Queues.Queues.SEND_EMAIL_NOTIFICATION_SALE);
             }

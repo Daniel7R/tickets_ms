@@ -1,20 +1,23 @@
 using TicketsMS.Application.Interfaces;
 using TicketsMS.Application.Mapping;
 using TicketsMS.Application.Services;
-using TicketsMS.Domain.Enums;
 using TicketsMS.Infrastructure.Data;
 using TicketsMS.Infrastructure.EventBus;
 using TicketsMS.Infrastructure.Repository;
 using TicketsMS.Infrastructure.Swagger;
 using DotNetEnv;
 using TicketsMS.Application.Handlers;
+using System.Text.Json.Serialization;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -27,6 +30,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddNpgsql<TicketDbContext>(builder.Configuration.GetConnectionString("dbConnectionTickets"));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ICustomTicketQueriesRepo, CustomTicketQueriesRepo>();
 builder.Services.AddScoped<IGenerateTicket, TicketService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
@@ -39,6 +43,8 @@ builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("R
 builder.Services.AddScoped<GenerateTicketsHandler>();
 builder.Services.AddSingleton<IEventBusConsumer, EventBusConsumer>();
 builder.Services.AddHostedService<EventBusConsumer>();
+
+
 
 var app = builder.Build();
 

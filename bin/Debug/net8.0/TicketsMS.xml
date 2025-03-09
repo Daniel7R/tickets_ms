@@ -10,7 +10,6 @@
             </summary>
             <param name="ticketType"></param>
             <returns></returns>
-            <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
             <summary>
@@ -57,7 +56,7 @@
         </member>
         <member name="M:TicketsMS.Application.Services.TicketService.GenerateTicketViewer(System.Int32,System.Boolean,System.Decimal)">
             <summary>
-                This methods 
+                This method generates a ticket for viewer
             </summary>
             <param name="idMatch"></param>
             <param name="isFree"></param>

@@ -14,14 +14,21 @@ namespace TicketsMS.Tests
     public class TicketServiceTests
     {
         private readonly Mock<IRepository<Tickets>> _mockTicketRepository;
+        private readonly Mock<ICustomTicketQueriesRepo> _mockCustomTicketQueriesRepo;
         private readonly Mock<IMapper> _mockMapper;
         private readonly TicketService _ticketService;
 
         public TicketServiceTests()
         {
             _mockTicketRepository = new Mock<IRepository<Tickets>>();
+            _mockCustomTicketQueriesRepo = new Mock<ICustomTicketQueriesRepo>();
             _mockMapper = new Mock<IMapper>();
-            _ticketService = new TicketService(_mockTicketRepository.Object, _mockMapper.Object);
+
+            _ticketService = new TicketService(
+                _mockTicketRepository.Object, 
+                _mockCustomTicketQueriesRepo.Object, 
+                _mockMapper.Object
+             );
         }
 
         [Fact]
