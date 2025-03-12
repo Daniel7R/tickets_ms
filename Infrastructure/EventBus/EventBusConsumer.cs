@@ -19,10 +19,10 @@ using TicketsMS.Infrastructure.Repository;
 
 namespace TicketsMS.Infrastructure.EventBus
 {
-    public class EventBusConsumer : BackgroundService, IEventBusConsumer, IEventBusConsumerAsync, IAsyncDisposable
+    public class EventBusConsumer : EventBusBase, IEventBusConsumer, IEventBusConsumerAsync
     {
-        private IConnection _connection;
-        private IChannel _channel;
+    //    private IConnection _connection;
+      //  private IChannel _channel;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly RabbitMQSettings _rabbitmqSettings;
         private readonly Dictionary<string, Func<string, Task<string>>> _handlers;
@@ -30,14 +30,14 @@ namespace TicketsMS.Infrastructure.EventBus
         private readonly ILogger<EventBusConsumer> _logger;
         private readonly IMapper _mapper;
 
-        public EventBusConsumer(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> options, ILogger<EventBusConsumer> logger, IMapper mapper)
+        public EventBusConsumer(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> options, ILogger<EventBusConsumer> logger, IMapper mapper) : base(options)
         {
-            _rabbitmqSettings = options.Value;
             _serviceScopeFactory = serviceScopeFactory;
             _handlers = new();
             _eventHandlers = new();
             _mapper = mapper;
             _logger = logger;
+            InitializeAsync().GetAwaiter().GetResult();
         }
 
         public static async Task<EventBusConsumer> CreateAsync(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> rabbitMQSettings, ILogger<EventBusConsumer> logger, IMapper mapper)
@@ -49,43 +49,7 @@ namespace TicketsMS.Infrastructure.EventBus
 
         private async Task InitializeAsync()
         {
-            var basePath = AppContext.BaseDirectory;
-            var pfxCerPath = Path.Combine(basePath, "Infrastructure", "Security", _rabbitmqSettings.CertFile);
-            if (!File.Exists(pfxCerPath)) throw new FileNotFoundException("PFX certificate not found");
-
-            var factory = new ConnectionFactory
-            {
-                HostName = _rabbitmqSettings.Host,
-                UserName = _rabbitmqSettings.Username,
-                Password = _rabbitmqSettings.Password,
-                Port = _rabbitmqSettings.Port,
-                AutomaticRecoveryEnabled = true,
-                NetworkRecoveryInterval = TimeSpan.FromSeconds(5),
-                RequestedHeartbeat = TimeSpan.FromSeconds(30),
-                ContinuationTimeout = TimeSpan.FromSeconds(30),
-                Ssl = new SslOption
-                {
-                    Enabled = true,
-                    ServerName = _rabbitmqSettings.ServerName,
-                    CertPath = pfxCerPath,
-                    CertPassphrase = _rabbitmqSettings.CertPassphrase,
-                    Version = System.Security.Authentication.SslProtocols.Tls12
-                }
-            };
-
-            while (_connection == null || !_connection.IsOpen || _channel == null || _channel.IsClosed)
-            {
-                try
-                {
-                    _connection = await factory.CreateConnectionAsync();
-                    _channel = await _connection.CreateChannelAsync();
-                }
-                catch (Exception ex)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                }
-            }
-
+            await base.InitializeAsync();
             RegisterHandlers();
         }
 
@@ -399,28 +363,6 @@ namespace TicketsMS.Infrastructure.EventBus
             {
                 Task.Run(InitializeAsync).GetAwaiter().GetResult();
             }
-        }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                if (_connection == null || !_connection.IsOpen || _channel == null || _channel.IsClosed) await InitializeAsync();
-
-                try
-                {
-                    await Task.Delay(500, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    await InitializeAsync();
-                }
-            }
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (_connection != null) await _connection.DisposeAsync();
-            if (_channel != null) await _channel.DisposeAsync();
         }
     }
 }

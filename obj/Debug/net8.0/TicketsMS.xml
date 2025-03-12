@@ -11,13 +11,18 @@
             <param name="ticketType"></param>
             <returns></returns>
         </member>
-        <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
+        <member name="M:TicketsMS.API.Controllers.TicketController.UseTicket">
             <summary>
-            
+            This method is in charge to use a ticket for a event
             </summary>
-            <param name="userId"></param>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
+            <summary>
+                Get tickets participant by userid
+            </summary>
+            <param name="userId"></param>
         </member>
         <member name="P:TicketsMS.Application.Messages.Request.EmailNotificationRequest.IdUser">
             <summary>
@@ -61,6 +66,15 @@
             <param name="idMatch"></param>
             <param name="isFree"></param>
             <param name="price"></param>
+            <returns></returns>
+            <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
+        </member>
+        <member name="M:TicketsMS.Application.Services.TicketService.ValidateTicket(System.Int32,System.String)">
+            <summary>
+            VAlidates that a provided ticket is valid and it belongs to the owner
+            </summary>
+            <param name="idUser"></param>
+            <param name="codeTicket"></param>
             <returns></returns>
             <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
         </member>

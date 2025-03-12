@@ -8,6 +8,7 @@ using TicketsMS.Infrastructure.Swagger;
 using DotNetEnv;
 using TicketsMS.Application.Handlers;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TicketsMS API", Version = "v1" });
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
     c.SchemaFilter<EnumSchemaFilter>(); // Enables los enums as string
 });
 //to enable datetime
@@ -42,9 +47,9 @@ builder.Logging.AddDebug();
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
 builder.Services.AddScoped<GenerateTicketsHandler>();
 builder.Services.AddSingleton<IEventBusConsumer, EventBusConsumer>();
+builder.Services.AddSingleton<IEventBusProducer, EventBusProducer>();
 builder.Services.AddHostedService<EventBusConsumer>();
-
-
+builder.Services.AddHostedService<EventBusProducer>();
 
 var app = builder.Build();
 
@@ -54,11 +59,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();

@@ -10,5 +10,6 @@ namespace TicketsMS.Application.Interfaces
         public Task<TicketResponseDTO> CreateTicketAsync(Tickets request);
         Task<IEnumerable<TicketResponseDTO>> GetTicketsByStatus(TicketStatus status);
         Task<IEnumerable<TicketParticipantResponseDTO>> GetTicketsByStatusAndIdTournament(TicketStatus status, int idTournament);
+        Task<IEnumerable<TicketsDetailsDTO>> GetTicketsByUser(int idUser);
     }
 }

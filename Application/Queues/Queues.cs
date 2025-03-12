@@ -15,5 +15,8 @@
         public const string GET_MATCH_BY_ID = "match.by_id";
         // produce for email service 
         public const string SEND_EMAIL_NOTIFICATION_SALE = "ticket.sale.notification";
+
+        //tournaments
+        public const string GET_BULK_TOURNAMENTS = "tournament.bulk.names";
     }
 }

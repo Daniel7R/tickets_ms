@@ -8,6 +8,7 @@ using TicketsMS.Infrastructure.Repository;
 using TicketsMS.Application.DTOs.Response;
 using Moq;
 using Xunit;
+using TicketsMS.Application.Interfaces;
 namespace TicketsMS.Tests
 {
 
@@ -15,20 +16,24 @@ namespace TicketsMS.Tests
     {
         private readonly Mock<IRepository<Tickets>> _mockTicketRepository;
         private readonly Mock<ICustomTicketQueriesRepo> _mockCustomTicketQueriesRepo;
+        private readonly Mock<IEventBusProducer> _mockEventBusProducer;
         private readonly Mock<IMapper> _mockMapper;
         private readonly TicketService _ticketService;
 
         public TicketServiceTests()
         {
             _mockTicketRepository = new Mock<IRepository<Tickets>>();
+            _mockEventBusProducer = new Mock<IEventBusProducer>();
             _mockCustomTicketQueriesRepo = new Mock<ICustomTicketQueriesRepo>();
             _mockMapper = new Mock<IMapper>();
 
             _ticketService = new TicketService(
-                _mockTicketRepository.Object, 
-                _mockCustomTicketQueriesRepo.Object, 
+                _mockTicketRepository.Object,
+                _mockEventBusProducer.Object,
+                _mockCustomTicketQueriesRepo.Object,
                 _mockMapper.Object
              );
+
         }
 
         [Fact]

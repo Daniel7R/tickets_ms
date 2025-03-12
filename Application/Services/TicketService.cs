@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using TicketsMS.Application.DTOs.Request;
 using TicketsMS.Application.DTOs.Response;
 using TicketsMS.Application.Interfaces;
+using TicketsMS.Application.Messages.Response;
 using TicketsMS.Domain.Entities;
 using TicketsMS.Domain.Enums;
 using TicketsMS.Domain.Exceptions;
@@ -12,29 +13,56 @@ using TicketsMS.Infrastructure.Repository;
 
 namespace TicketsMS.Application.Services
 {
-    public class TicketService: ITicketService, IGenerateTicket
+    public class TicketService : ITicketService, IGenerateTicket
     {
         private readonly IRepository<Tickets> _ticketRepository;
+        private readonly IEventBusProducer _eventBusProducer;
         private readonly ICustomTicketQueriesRepo _customQueriesRepo;
         private readonly IMapper _mapper;
         private const string TICKET_PREFIX = "TKT";
         private const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int SIZE_CHAR_CODE = 6;
 
-        public TicketService(IRepository<Tickets> ticketRepository, ICustomTicketQueriesRepo customTicketQueriesRepo,IMapper mapper)
+        public TicketService(IRepository<Tickets> ticketRepository, IEventBusProducer eventBusProducer,ICustomTicketQueriesRepo customTicketQueriesRepo, IMapper mapper)
         {
             _customQueriesRepo = customTicketQueriesRepo;
             _ticketRepository = ticketRepository;
+            _eventBusProducer = eventBusProducer;
             _mapper = mapper;
         }
 
-        public Task<Tickets> GenerateTicket(TicketType type,int idEvent, bool isFree, decimal price)
+        public async Task<IEnumerable<TicketsDetailsDTO>> GetTicketsByUser(int idUser)
+        {
+
+            var ticketsUser = await _customQueriesRepo.GetTicketsByUser(idUser);
+
+            var idsTorneos = ticketsUser.Select(x => x.IdTournament ?? 0).ToList();
+            var tournaments = await _eventBusProducer.SendRequest<List<int>, IEnumerable<GetTournamentBulkResponse>>(idsTorneos, Queues.Queues.GET_BULK_TOURNAMENTS);
+            //FALTAN TICKETS DE PARTIDOS/VIEWERS
+
+            IEnumerable<TicketsDetailsDTO> response =(from t in ticketsUser 
+                                                      join tr in tournaments on  t.IdTournament equals tr.Id into tournamentGroup
+                                                      from tournament in tournamentGroup.DefaultIfEmpty()
+                                                      select new TicketsDetailsDTO
+                                                      {
+                                                          Id = t.Id,
+                                                          Code =t.Code,
+                                                          Type = t.Type,
+                                                          IdTournament= tournament.Id,
+                                                          Name = tournament.Name
+                                                      });
+
+            return response;
+        }
+
+        public Task<Tickets> GenerateTicket(TicketType type, int idEvent, bool isFree, decimal price)
         {
             Tickets ticket;
 
             if (type == TicketType.PARTICIPANT)
             {
-                ticket = new Tickets{
+                ticket = new Tickets
+                {
                     IdTournament = idEvent,
                     Code = GenerateTicketCode(),
                     Type = TicketType.PARTICIPANT,
@@ -72,7 +100,7 @@ namespace TicketsMS.Application.Services
                 Status = TicketStatus.GENERATED,
             };
 
-            if (!isFree && price> 0)
+            if (!isFree && price > 0)
             {
                 ticket.Price = price;
             }
@@ -114,7 +142,7 @@ namespace TicketsMS.Application.Services
                 rng.GetBytes(randomBytes);
             }
 
-            for(int i=0; i< SIZE_CHAR_CODE; i++)
+            for (int i = 0; i < SIZE_CHAR_CODE; i++)
             {
                 builderCode[i] = CHARACTERS[randomBytes[i] % CHARACTERS.Length];
             }
@@ -124,13 +152,54 @@ namespace TicketsMS.Application.Services
             return code;
         }
 
+
+        /// <summary>
+        /// VAlidates that a provided ticket is valid and it belongs to the owner
+        /// </summary>
+        /// <param name="idUser"></param>
+        /// <param name="codeTicket"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessRuleException"></exception>
+        public async Task ValidateTicket(int idUser, string codeTicket)
+        {
+            var ticket = await _customQueriesRepo.GetTicketByCode(codeTicket);
+            if (ticket == null) throw new BusinessRuleException("Ticket is not valid");
+
+            if (ticket.TicketSales.IdUser != idUser) throw new BusinessRuleException("User does not own ticket");
+
+            if (
+                ticket.Status.Equals(TicketStatus.CANCELED) || 
+                ticket.Status.Equals(TicketStatus.GENERATED) || 
+                ticket.Status.Equals(TicketStatus.USED)
+              ) 
+                throw new BusinessRuleException("Ticket is already used or invalid");
+
+            //ticket TYPE
+            switch (ticket.Type)
+            {
+                case TicketType.PARTICIPANT:
+                //OR    
+                case TicketType.VIEWER:
+                    await UpdateTicketStatus(ticket.Id, TicketStatus.ACTIVE);
+                    break;
+                default:
+                    throw new BusinessRuleException($"Ticket type is not valid");
+            }
+            //UNA VEZ Acabe el evento torneo o partido, cambio el estado a USED para que no pueda volver a ser usado
+        }
+
+        public async Task UpdateTicketStatus(int idTicket, TicketStatus newStatus)
+        {
+            await _customQueriesRepo.UpdateStatus(idTicket, newStatus);
+        }
+
         public async Task<TicketResponseDTO> CreateTicketAsync(Tickets ticketRequest)
         {
             /*if (ticketRequest == true && ticketRequest.Price <= 0)
             {
                 throw new BusinessRuleException("Price must be equal to zero if it's free");
-            }*/ 
-            if(ticketRequest.IdMatch == null && ticketRequest.IdTournament == null)
+            }*/
+            if (ticketRequest.IdMatch == null && ticketRequest.IdTournament == null)
             {
                 throw new BusinessRuleException("Both ticket and tournament id can't be null at the same time");
             }
@@ -154,7 +223,7 @@ namespace TicketsMS.Application.Services
         {
             var tickets = await _customQueriesRepo.GetTicketsByStatusAndIdTournament(status, idTournament);
             var response = _mapper.Map<IEnumerable<TicketParticipantResponseDTO>>(tickets);
-            
+
             return response;
         }
     }

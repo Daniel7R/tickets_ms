@@ -4,11 +4,12 @@ using System.ComponentModel;
 using TicketsMS.Application.DTOs.Request;
 using TicketsMS.Application.DTOs.Response;
 using TicketsMS.Application.Interfaces;
+using TicketsMS.Domain.Entities;
 using TicketsMS.Domain.Enums;
 
 namespace TicketsMS.API.Controllers
 {
-    [Route("api/v1")]
+    [Route("api/v1/tickets")]
     [ApiController]
     [Consumes("application/json")]
     [Produces("application/json")]
@@ -28,7 +29,7 @@ namespace TicketsMS.API.Controllers
         /// <param name="ticketType"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("tickets")]
+        [Route("")]
         [Description("This endpoint returns tickets according ticket types")]
         [ProducesResponseType(200, Type = typeof(ResponseDTO<List<TicketParticipantResponseDTO?>>))]
         public async Task<IActionResult> GetAvailableTickets([FromQuery, BindRequired] int idTournament)
@@ -44,18 +45,32 @@ namespace TicketsMS.API.Controllers
         }
 
         /// <summary>
-        /// 
+        /// This method is in charge to use a ticket for a event
         /// </summary>
-        /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        [HttpGet]
-        [Route("tickets/{userId}")]
-        public Task<IActionResult> GetTicketByUser(int userId)
+        [HttpPost]
+        [Route("use", Name ="UseTicket")]
+        public async Task<IActionResult> UseTicket()
         {
-
-            //validate if the user is equals to the provided in token
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Get tickets participant by userid
+        /// </summary>
+        /// <param name="userId"></param>
+        [HttpGet]
+        [Route("{userId}")]
+        public async Task<IActionResult> GetTicketByUser(int userId)
+        {
+            var response = new ResponseDTO<IEnumerable<TicketsDetailsDTO>>();
+
+            var ticketes = await _ticketService.GetTicketsByUser(userId);
+
+            response.Result = ticketes;
+            //validate if the user is equals to the provided in token
+            return Ok(response);
         }
     }
 }
