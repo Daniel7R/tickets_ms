@@ -6,6 +6,8 @@ using TicketsMS.Application.DTOs.Response;
 using TicketsMS.Application.Interfaces;
 using TicketsMS.Domain.Entities;
 using TicketsMS.Domain.Enums;
+using TicketsMS.Domain.Exceptions;
+using TicketsMS.Infrastructure.Filters;
 
 namespace TicketsMS.API.Controllers
 {
@@ -47,13 +49,25 @@ namespace TicketsMS.API.Controllers
         /// <summary>
         /// This method is in charge to use a ticket for a event
         /// </summary>
+        /// <param name="request"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpPost]
         [Route("use", Name ="UseTicket")]
-        public async Task<IActionResult> UseTicket()
+        [ApiKeyFilter]
+        public async Task<IActionResult> UseTicket([FromBody] UseTicketRequest request)
         {
-            throw new NotImplementedException();
+            var response = new ResponseDTO<bool?>();
+            try
+            {
+                var isValid = await _ticketService.UseTicket(request);
+                response.Result = isValid;
+                response.Message = "Ticket is valid";
+                return Ok(response);
+            } catch(BusinessRuleException br)
+            {
+                response.Message = br.Message;
+                return BadRequest(response);
+            }
         }
 
         /// <summary>

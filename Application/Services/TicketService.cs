@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using TicketsMS.Application.DTOs.Request;
 using TicketsMS.Application.DTOs.Response;
 using TicketsMS.Application.Interfaces;
+using TicketsMS.Application.Messages.Request;
 using TicketsMS.Application.Messages.Response;
 using TicketsMS.Domain.Entities;
 using TicketsMS.Domain.Enums;
@@ -188,11 +189,59 @@ namespace TicketsMS.Application.Services
             //UNA VEZ Acabe el evento torneo o partido, cambio el estado a USED para que no pueda volver a ser usado
         }
 
+        /// <summary>
+        /// Update a ticket status for a provided id
+        /// </summary>
+        /// <param name="idTicket"></param>
+        /// <param name="newStatus"></param>
+        /// <returns></returns>
         public async Task UpdateTicketStatus(int idTicket, TicketStatus newStatus)
         {
             await _customQueriesRepo.UpdateStatus(idTicket, newStatus);
         }
 
+        public async Task<bool> UseTicket(UseTicketRequest request)
+        {
+            var ticket = await _customQueriesRepo.GetTicketByCode(request.Code);
+            if (ticket == null) throw new BusinessRuleException("Ticket is not valid or does not exist");
+
+            if (ticket.TicketSales.IdUser != request.IdUser) throw new BusinessRuleException("Ticket does not belong user");
+
+            if(!ticket.Type.Equals(request.Type)) throw new BusinessRuleException("Ticket type provided is not valid");
+            //GENERATED IS WHEN A TICKET IS CREATED
+            //CANCELED WHEN A TICKET IS NOT VALID FOR A USER
+            if (ticket.Status.Equals(TicketStatus.GENERATED)|| 
+                ticket.Status.Equals(TicketStatus.CANCELED) || 
+                ticket.Status.Equals(TicketStatus.USED)
+               )
+                throw new BusinessRuleException("Ticket is invalid or it has already been used");
+
+            if (ticket.Type.Equals(TicketType.VIEWER) && ticket.IdMatch  != request.IdMatch)
+            {
+                throw new BusinessRuleException("Ticket is not valid for event");
+            } else if (ticket.Type.Equals(TicketType.PARTICIPANT))
+            {
+                var requestValidation = new ValidateMatchTournament
+                {
+                    IdMatch = request.IdMatch,
+                    IdTournament = (int)ticket.IdTournament
+                };
+                //request if match to use ticket belongs to tournament
+                var isValidMatchTournmanet = await _eventBusProducer.SendRequest<ValidateMatchTournament, bool>(requestValidation, Queues.Queues.MATCH_BELONGS_TOURNAMENT);
+            
+                if (!isValidMatchTournmanet) throw new BusinessRuleException("Ticket is not valid for match from tournament");
+            
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Create a ticket in db, it could synchronous o asynchronous creation
+        /// </summary>
+        /// <param name="ticketRequest"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessRuleException"></exception>
         public async Task<TicketResponseDTO> CreateTicketAsync(Tickets ticketRequest)
         {
             /*if (ticketRequest == true && ticketRequest.Price <= 0)

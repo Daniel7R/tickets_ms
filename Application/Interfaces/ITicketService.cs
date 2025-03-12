@@ -11,5 +11,6 @@ namespace TicketsMS.Application.Interfaces
         Task<IEnumerable<TicketResponseDTO>> GetTicketsByStatus(TicketStatus status);
         Task<IEnumerable<TicketParticipantResponseDTO>> GetTicketsByStatusAndIdTournament(TicketStatus status, int idTournament);
         Task<IEnumerable<TicketsDetailsDTO>> GetTicketsByUser(int idUser);
+        Task<bool> UseTicket(UseTicketRequest request);
     }
 }
