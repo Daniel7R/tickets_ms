@@ -6,7 +6,7 @@ namespace TicketsMS.Application.DTOs.Response
     {
 
         public int Id { get; set; }
-        public string IdTournament { get; set; }
+        public int IdTournament { get; set; }
         public TicketType Type { get; set; } = TicketType.PARTICIPANT;
     }
 }

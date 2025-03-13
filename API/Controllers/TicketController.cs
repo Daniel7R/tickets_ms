@@ -32,7 +32,6 @@ namespace TicketsMS.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("")]
-        [Description("This endpoint returns tickets according ticket types")]
         [ProducesResponseType(200, Type = typeof(ResponseDTO<List<TicketParticipantResponseDTO?>>))]
         public async Task<IActionResult> GetAvailableTickets([FromQuery, BindRequired] int idTournament)
         {

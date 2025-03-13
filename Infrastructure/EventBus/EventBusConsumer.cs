@@ -62,7 +62,7 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate participant tickets for tournament id {request.IdTournament}");
                     using var scope = _serviceScopeFactory.CreateScope();
-                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
                     await handler.GenerateTicketsParticipantsAsync(request);
                     /*
                     var ticketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
@@ -97,7 +97,7 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate ticket sale participant for user {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
-                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
                     await handler.GenerateTicketSale(request);
 
@@ -147,7 +147,7 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate ticket viewer and ticket sale {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
-                    var handler = scope.ServiceProvider.GetRequiredService<GenerateTicketsHandler>();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
                     await handler.GenerateTicketSaleViewer(request);
 
@@ -191,6 +191,16 @@ namespace TicketsMS.Infrastructure.EventBus
                         _logger.LogError($"Error assigning ticket sale: {ex.Message}");
                         await transaction.RollbackAsync();
                     }*/
+                });
+
+
+                await RegisterEventHandlerAsync<int>(Queues.CHANGE_TICKETS_PARTICIPANT_USED, async (idTournament) =>
+                {
+                    _logger.LogInformation($"Received request to inactivate particpant tickets");
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
+
+                    await handler.ChangeParticipantTicketsStatus(idTournament, TicketStatus.USED);
                 });
             });
 

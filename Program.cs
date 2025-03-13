@@ -45,7 +45,7 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
-builder.Services.AddScoped<GenerateTicketsHandler>();
+builder.Services.AddScoped<TicketsHandler>();
 builder.Services.AddSingleton<IEventBusConsumer, EventBusConsumer>();
 builder.Services.AddSingleton<IEventBusProducer, EventBusProducer>();
 builder.Services.AddHostedService<EventBusConsumer>();

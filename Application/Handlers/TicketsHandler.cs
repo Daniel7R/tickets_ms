@@ -10,15 +10,15 @@ using TicketsMS.Infrastructure.Repository;
 
 namespace TicketsMS.Application.Handlers
 {
-    public class GenerateTicketsHandler
+    public class TicketsHandler
     {
         private readonly IRepository<Tickets> _ticketsRepo;
         IEventBusConsumer _eventBusConsumer;
         private readonly IRepository<TicketSales> _saleTicketRepo;
-        private readonly ILogger<GenerateTicketsHandler> _logger;
+        private readonly ILogger<TicketsHandler> _logger;
         private readonly TicketDbContext _dbContext;
         private readonly IGenerateTicket _generateTicketService;
-        public GenerateTicketsHandler(TicketDbContext dbContext, IRepository<Tickets> repository, IRepository<TicketSales> ticketSales,IGenerateTicket ticketService, ILogger<GenerateTicketsHandler> logger, IEventBusConsumer eventBusConsumer)
+        public TicketsHandler(TicketDbContext dbContext, IRepository<Tickets> repository, IRepository<TicketSales> ticketSales, IGenerateTicket ticketService, ILogger<TicketsHandler> logger, IEventBusConsumer eventBusConsumer)
         {
             _logger = logger;
             _dbContext = dbContext;
@@ -66,7 +66,7 @@ namespace TicketsMS.Application.Handlers
                 var viewerRoleReques = new AssignViewerRole
                 {
                     IdUser = request.IdUser,
-                    IdMatch= request.IdMatch,
+                    IdMatch = request.IdMatch,
                 };
                 await _eventBusConsumer.PublishEventAsync<AssignViewerRole>(viewerRoleReques, Queues.Queues.ASSIGN_ROLE_VIEWER);
                 await _dbContext.SaveChangesAsync();
@@ -147,6 +147,23 @@ namespace TicketsMS.Application.Handlers
                 await transaction.RollbackAsync();
             }
 
+        }
+
+        public async Task ChangeParticipantTicketsStatus(int idTournament, TicketStatus newStatus)
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                _dbContext.Tickets.Where(t => t.IdTournament == idTournament).ExecuteUpdate(
+                    setters => setters.SetProperty(ticket => ticket.Status, newStatus));
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error changing particiapnt ticket status: {ex.Message}");
+                await transaction.RollbackAsync();
+            }
         }
     }
 }

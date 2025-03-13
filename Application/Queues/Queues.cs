@@ -19,5 +19,7 @@
         //tournaments
         public const string GET_BULK_TOURNAMENTS = "tournament.bulk.names";
         public const string MATCH_BELONGS_TOURNAMENT = "match.belongs.tournament";
+
+        public const string CHANGE_TICKETS_PARTICIPANT_USED = "tickets.participant.used";
     }
 }
