@@ -10,9 +10,9 @@ Este es un ms a cargo de la gestion de la lógica de Tickets y TicketSales(venta
 
 ## Enpoints Controllers
 - [GET] `api/v1//tickets`: este metodo es el encargado de obtener los tickets de los torneos pendientes(tickets con estado generated) para los participantes del torneo, esta operacion recibe como parametro de Query (`QueryParam`) un parametro llamado `idTournament` el cual es obligatorio, en caso
-### Ejemplos: `/api/v1/tickets?idTournament=2`
+### Ejemplo: `/api/v1/tickets?idTournament=2`
 
-Respuesta: 
+***Respuesta:*** 
 ```
 {
     "result": [
@@ -72,7 +72,18 @@ Respuesta:
 ```
 
 - [POST] `api/v1/tickets/use`: este metodo se encarga de hacer diferentes validaciones cuando un user desea hacer uso del ticket, se hacen validaciones de que el ticket(codigo de ticket) sea valido, el ticket corresponda al usuario, ademas  de corresponder al torneo o partido al que se desea unir(*este endpoint requiere un api-key que requiere para su consumo, limitando asi el acceso*, header-name: **x-api-key**)
-
+### Ejemplo: `/api/v1/tickets/use`
+***Headers:***
+    **x-api-key**: example-value
+***Body**:
+```
+{
+  "code": "string",
+  "idUser": 0,
+  "idMatch": 2,
+  "type": "VIEWER"
+}
+```
 
 ## RabbitMQ(EventBus)
 En el proyecto se hace uso de RabbitMQ como Message Broker para procesamiento de Eventos ya sean asincronos, como sincronos con el patron de integracion Request/Reply. Estas colas se usan con el fin de hacer procesamiento asincrono de las tareas, y otras, con el fin de evitar exponer endpoints hacia los usuarios.
