@@ -16,13 +16,13 @@ namespace TicketsMS.Infrastructure.EventBus
 
         protected async Task InitializeAsync()
         {
-            var basePath = AppContext.BaseDirectory;
-            var pfxCertPath = Path.Combine(basePath, "Infrastructure", "Security", _rabbitmqSettings.CertFile);
+            // var basePath = AppContext.BaseDirectory;
+            // var pfxCertPath = Path.Combine(basePath, "Infrastructure", "Security", _rabbitmqSettings.CertFile);
 
-            if (!File.Exists(pfxCertPath))
-            {
-                throw new FileNotFoundException("PFX certificate not found");
-            }
+            // if (!File.Exists(pfxCertPath))
+            // {
+            //     throw new FileNotFoundException("PFX certificate not found");
+            // }
 
             var factory = new ConnectionFactory
             {
@@ -34,14 +34,15 @@ namespace TicketsMS.Infrastructure.EventBus
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(5),
                 RequestedHeartbeat = TimeSpan.FromSeconds(30),
                 ContinuationTimeout = TimeSpan.FromSeconds(30),
-                Ssl = new SslOption
-                {
-                    Enabled = true,
-                    ServerName = _rabbitmqSettings.ServerName,
-                    CertPath = pfxCertPath,
-                    CertPassphrase = _rabbitmqSettings.CertPassphrase,
-                    Version = System.Security.Authentication.SslProtocols.Tls12
-                }
+                 VirtualHost= "ngimsipu"
+                // Ssl = new SslOption
+                // {
+                //     Enabled = true,
+                //     ServerName = _rabbitmqSettings.ServerName,
+                //     CertPath = pfxCertPath,
+                //     CertPassphrase = _rabbitmqSettings.CertPassphrase,
+                //     Version = System.Security.Authentication.SslProtocols.Tls12
+                // }
             };
 
             while (_connection == null || !_connection.IsOpen || _channel == null || _channel.IsClosed)

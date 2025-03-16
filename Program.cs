@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 
 Env.Load();
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 builder.Configuration.AddEnvironmentVariables();
 // Add services to the container.
 

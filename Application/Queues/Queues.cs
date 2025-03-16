@@ -21,5 +21,6 @@
         public const string MATCH_BELONGS_TOURNAMENT = "match.belongs.tournament";
 
         public const string CHANGE_TICKETS_PARTICIPANT_USED = "tickets.participant.used";
+        public const string CHANGE_TICKETS_VIEWERS_USED = "tickets.viewers.used";
     }
 }

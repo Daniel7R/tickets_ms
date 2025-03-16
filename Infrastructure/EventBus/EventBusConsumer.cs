@@ -64,33 +64,6 @@ namespace TicketsMS.Infrastructure.EventBus
                     using var scope = _serviceScopeFactory.CreateScope();
                     var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
                     await handler.GenerateTicketsParticipantsAsync(request);
-                    /*
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
-
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
-
-
-                    try
-                    {
-                        var quantity = request.QuantityTickets;
-                        var priceTicket = request.IsFree ? 0 : TicketPrices.PARTICIPANT;
-                        var tasks = Enumerable.Range(0, quantity)
-                            .Select(async _ =>
-                            {
-                                var ticketResponse = await ticketService.GenerateTicket(TicketType.PARTICIPANT, request.IdTournament, request.IsFree, priceTicket);
-                                dbContext.Tickets.Add(ticketResponse);
-                            }).ToList();
-                        await Task.WhenAll(tasks);
-
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error generation tickets: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }*/
                 });
                 //Queue to manage ticket sale participant
                 await RegisterEventHandlerAsync<GenerateTicketSale>(Queues.SELL_TICKET_PARTICIPANT, async (request) =>
@@ -100,47 +73,6 @@ namespace TicketsMS.Infrastructure.EventBus
                     var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
                     await handler.GenerateTicketSale(request);
-
-                    /*
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
-                    var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
-
-                    
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
-
-                    try
-                    {
-                        var ticketById = await ticketService.GetByIdAsync((int)request.IdTicket);
-                        ticketById.Status = TicketStatus.ACTIVE;
-
-                        var ticketSale = new TicketSales
-                        {
-                            IdTicket = (int)request.IdTicket,
-                            IdUser = request.IdUser,
-                            IdTransaction = request.IdTransaction
-                        };
-
-                        //create sale ticket
-                        await ticketSaleService.AddAsync(ticketSale);
-                        //update ticket status
-                        await ticketService.UpdateAsync(ticketById);
-
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        var email = new EmailNotificationRequest
-                        {
-                            IdUser = request.IdUser,
-                            Subject = "Ticket Info",
-                            Body = $"This is the body with the code: {ticketById.Code}"
-                        };
-                        await PublishEventAsync<EmailNotificationRequest>(email, Queues.SEND_EMAIL_NOTIFICATION);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error assigning ticket sale: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }*/
                 });
 
                 await RegisterEventHandlerAsync<GenerateTicketSaleViewer>(Queues.SELL_TICKET_VIEWER, async (request) =>
@@ -150,47 +82,6 @@ namespace TicketsMS.Infrastructure.EventBus
                     var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
                     await handler.GenerateTicketSaleViewer(request);
-
-                    /*
-                    var generateTicketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
-                    var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
-
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
-
-                    try
-                    {
-                        var ticket = await generateTicketService.GenerateTicket(TicketType.VIEWER, request.IdMatch, false, TicketPrices.VIEWER);
-                        //update ticket status
-                        ticket.Status = TicketStatus.ACTIVE;
-                        await ticketService.AddAsync(ticket);
-                        //create sale ticket
-                        var ticketSale = new TicketSales
-                        {
-                            IdTicket = ticket.Id,
-                            IdUser = request.IdUser,
-                            IdTransaction = request.IdTransaction
-                        };
-
-                        await ticketSaleService.AddAsync(ticketSale);
-
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        var email = new EmailNotificationRequest
-                        {
-                            IdUser = request.IdUser,
-                            Subject = "Ticket Info",
-                            Body = $"This is the body viewer with the code: {ticket.Code}"
-                        };
-                        await PublishEventAsync<EmailNotificationRequest>(email, Queues.SEND_EMAIL_NOTIFICATION);
-                    }
-                    catch (Exception ex)
-                    {
-
-                        _logger.LogError($"Error assigning ticket sale: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }*/
                 });
 
 
@@ -201,6 +92,15 @@ namespace TicketsMS.Infrastructure.EventBus
                     var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
                     await handler.ChangeParticipantTicketsStatus(idTournament, TicketStatus.USED);
+                });
+
+                await RegisterEventHandlerAsync<int>(Queues.CHANGE_TICKETS_VIEWERS_USED, async (idmatch) =>
+                {
+                    _logger.LogInformation($"Received request to inactivate viewers tickets");
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
+
+                    await handler.ChangeViewersTicketsStatus(idmatch, TicketStatus.USED);
                 });
             });
 

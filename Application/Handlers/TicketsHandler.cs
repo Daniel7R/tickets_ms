@@ -165,5 +165,22 @@ namespace TicketsMS.Application.Handlers
                 await transaction.RollbackAsync();
             }
         }
+
+           public async Task ChangeViewersTicketsStatus(int idMatch, TicketStatus newStatus)
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                _dbContext.Tickets.Where(t => t.IdMatch == idMatch).ExecuteUpdate(
+                    setters => setters.SetProperty(ticket => ticket.Status, newStatus));
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error changing particiapnt ticket status: {ex.Message}");
+                await transaction.RollbackAsync();
+            }
+        }
     }
 }

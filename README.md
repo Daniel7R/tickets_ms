@@ -7,10 +7,33 @@ Este es un ms a cargo de la gestion de la lógica de Tickets y TicketSales(venta
 - PostgreSQL
 - RabbitMQ Server
 
+## Estructura del Proyecto
+
+- **API/Controllers/**: Contiene los controladores de la API.
+- **Domain/Entities/**: Contiene los modelos o entidades de datos.
+- **Application/Services/**: Contiene los servicios de la aplicación.
+- **Infrastructure/Data/**: Contiene el contexto de la base de datos.
+- **Infrastructure/EventBus/**: Contiene la config del event bus/rabbitmq.
+- **Program.cs**: Punto de entrada del proyecto.
+
+# Instrucciones de Ejecución
+Para ejecutar el proyecto UsersAuthorization, sigue estos pasos:
+
+- Asegúrate de tener una base de datos PostgreSQL en funcionamiento.
+- Configura las variables de entorno necesarias o modifica los archivos appsettings.json, según sea necesario.
+- Navega al directorio del proyecto UsersAuthorization.
+- Ejecuta el siguiente comando para aplicar las migraciones de la base de datos: `dotnet ef database update`
+- Ejecuta el siguiente comando para iniciar el proyecto: `dotnet run`
+
+Esto iniciará el proyecto y estará listo para poder ser usado.
+
+Generar Documentación con Swagger
+Swagger automáticamente genera la documentación de la API. Para ver la documentación generada, inicia la aplicación y navega a http://localhost:<puerto>/swagger.
+
 
 ## Enpoints Controllers
-- [GET] `api/v1//tickets`: este metodo es el encargado de obtener los tickets de los torneos pendientes(tickets con estado generated) para los participantes del torneo, esta operacion recibe como parametro de Query (`QueryParam`) un parametro llamado `idTournament` el cual es obligatorio, en caso
-### Ejemplo: `/api/v1/tickets?idTournament=2`
+- [GET] `api/v1/tickets`: este metodo es el encargado de obtener los tickets de los torneos pendientes(tickets con estado generated) para los participantes del torneo, esta operacion recibe como parametro de Query (`QueryParam`) un parametro llamado `idTournament` el cual es obligatorio, en caso
+***URI***: `/api/v1/tickets?idTournament=2`
 
 ***Respuesta:*** 
 ```
@@ -72,9 +95,12 @@ Este es un ms a cargo de la gestion de la lógica de Tickets y TicketSales(venta
 ```
 
 - [POST] `api/v1/tickets/use`: este metodo se encarga de hacer diferentes validaciones cuando un user desea hacer uso del ticket, se hacen validaciones de que el ticket(codigo de ticket) sea valido, el ticket corresponda al usuario, ademas  de corresponder al torneo o partido al que se desea unir(*este endpoint requiere un api-key que requiere para su consumo, limitando asi el acceso*, header-name: **x-api-key**)
-### Ejemplo: `/api/v1/tickets/use`
+
+***URI***: `/api/v1/tickets/use`
+
 ***Headers:***
     **x-api-key**: example-value
+
 ***Body**:
 ```
 {

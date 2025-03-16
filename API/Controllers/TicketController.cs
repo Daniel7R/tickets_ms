@@ -48,12 +48,13 @@ namespace TicketsMS.API.Controllers
         /// <summary>
         /// This method is in charge to use a ticket for a event
         /// </summary>
+        /// <param name="_">api key header</param>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("use", Name ="UseTicket")]
         [ApiKeyFilter]
-        public async Task<IActionResult> UseTicket([FromBody] UseTicketRequest request)
+        public async Task<IActionResult> UseTicket([FromHeader(Name = "x-api-key"), BindRequired] string _, [FromBody] UseTicketRequest request)
         {
             var response = new ResponseDTO<bool?>();
             try
