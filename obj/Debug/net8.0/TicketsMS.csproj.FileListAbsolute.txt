@@ -16,6 +16,7 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Castle.Core.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\DotNetEnv.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Humanizer.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Microsoft.Build.Locator.dll
@@ -54,6 +55,7 @@ C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\NuGet.Frameworks.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\RabbitMQ.Client.dll
+C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Sprache.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\dr734\OneDrive\Escritorio\assessment\E-Sports\TicketsMS\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using TicketsMS.Application.DTOs.Request;
+using TicketsMS.Application.Handlers;
 using TicketsMS.Application.Interfaces;
 using TicketsMS.Application.Messages.Request;
 using TicketsMS.Application.Messages.Response;
@@ -17,10 +19,10 @@ using TicketsMS.Infrastructure.Repository;
 
 namespace TicketsMS.Infrastructure.EventBus
 {
-    public class EventBusConsumer : BackgroundService, IEventBusConsumer, IEventBusConsumerAsync, IAsyncDisposable
+    public class EventBusConsumer : EventBusBase, IEventBusConsumer, IEventBusConsumerAsync
     {
-        private IConnection _connection;
-        private IChannel _channel;
+    //    private IConnection _connection;
+      //  private IChannel _channel;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly RabbitMQSettings _rabbitmqSettings;
         private readonly Dictionary<string, Func<string, Task<string>>> _handlers;
@@ -28,14 +30,14 @@ namespace TicketsMS.Infrastructure.EventBus
         private readonly ILogger<EventBusConsumer> _logger;
         private readonly IMapper _mapper;
 
-        public EventBusConsumer(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> options, ILogger<EventBusConsumer> logger, IMapper mapper)
+        public EventBusConsumer(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> options, ILogger<EventBusConsumer> logger, IMapper mapper) : base(options)
         {
-            _rabbitmqSettings = options.Value;
             _serviceScopeFactory = serviceScopeFactory;
             _handlers = new();
             _eventHandlers = new();
             _mapper = mapper;
             _logger = logger;
+            InitializeAsync().GetAwaiter().GetResult();
         }
 
         public static async Task<EventBusConsumer> CreateAsync(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> rabbitMQSettings, ILogger<EventBusConsumer> logger, IMapper mapper)
@@ -47,47 +49,11 @@ namespace TicketsMS.Infrastructure.EventBus
 
         private async Task InitializeAsync()
         {
-            var basePath = AppContext.BaseDirectory;
-            var pfxCerPath = Path.Combine(basePath, "Infrastructure", "Security", _rabbitmqSettings.CertFile);
-            if (!File.Exists(pfxCerPath)) throw new FileNotFoundException("PFX certificate not found");
-
-            var factory = new ConnectionFactory
-            {
-                HostName = _rabbitmqSettings.Host,
-                UserName = _rabbitmqSettings.Username,
-                Password = _rabbitmqSettings.Password,
-                Port = _rabbitmqSettings.Port,
-                AutomaticRecoveryEnabled = true,
-                NetworkRecoveryInterval = TimeSpan.FromSeconds(5),
-                RequestedHeartbeat = TimeSpan.FromSeconds(30),
-                ContinuationTimeout = TimeSpan.FromSeconds(30),
-                Ssl = new SslOption
-                {
-                    Enabled = true,
-                    ServerName = _rabbitmqSettings.ServerName,
-                    CertPath = pfxCerPath,
-                    CertPassphrase = _rabbitmqSettings.CertPassphrase,
-                    Version = System.Security.Authentication.SslProtocols.Tls12
-                }
-            };
-
-            while (_connection == null || !_connection.IsOpen || _channel == null || _channel.IsClosed)
-            {
-                try
-                {
-                    _connection = await factory.CreateConnectionAsync();
-                    _channel = await _connection.CreateChannelAsync();
-                }
-                catch (Exception ex)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                }
-            }
-
+            await base.InitializeAsync();
             RegisterHandlers();
         }
 
-        private void RegisterHandlers()
+        private async void RegisterHandlers()
         {
             _ = Task.Run(async () =>
             {
@@ -96,123 +62,45 @@ namespace TicketsMS.Infrastructure.EventBus
                 {
                     _logger.LogInformation($"Received request to generate participant tickets for tournament id {request.IdTournament}");
                     using var scope = _serviceScopeFactory.CreateScope();
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
-
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
-
-
-                    try
-                    {
-                        var quantity = request.QuantityTickets;
-                        var priceTicket = request.IsFree ? 0 : TicketPrices.PARTICIPANT;
-                        var tasks = Enumerable.Range(0, quantity)
-                            .Select(async _ =>
-                            {
-                                var ticketResponse = await ticketService.GenerateTicket(TicketType.PARTICIPANT, request.IdTournament, request.IsFree, priceTicket);
-                                dbContext.Tickets.Add(ticketResponse);
-                            }).ToList();
-                        await Task.WhenAll(tasks);
-
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error generation tickets: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
+                    await handler.GenerateTicketsParticipantsAsync(request);
                 });
                 //Queue to manage ticket sale participant
                 await RegisterEventHandlerAsync<GenerateTicketSale>(Queues.SELL_TICKET_PARTICIPANT, async (request) =>
                 {
                     _logger.LogInformation($"Received request to generate ticket sale participant for user {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
-                    var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
-
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
-
-                    try
-                    {
-                        var ticketById = await ticketService.GetByIdAsync((int)request.IdTicket);
-                        ticketById.Status = TicketStatus.ACTIVE;
-
-                        var ticketSale = new TicketSales
-                        {
-                            IdTicket = (int)request.IdTicket,
-                            IdUser = request.IdUser,
-                            IdTransaction = request.IdTransaction
-                        };
-
-                        //create sale ticket
-                        await ticketSaleService.AddAsync(ticketSale);
-                        //update ticket status
-                        await ticketService.UpdateAsync(ticketById);
-
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        var email = new EmailNotificationRequest
-                        {
-                            IdUser = request.IdUser,
-                            Subject = "Ticket Info",
-                            Body = $"This is the body with the code: {ticketById.Code}"
-                        };
-                        await PublishEventAsync<EmailNotificationRequest>(email, Queues.SEND_EMAIL_NOTIFICATION);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"Error assigning ticket sale: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }
+                    await handler.GenerateTicketSale(request);
                 });
 
                 await RegisterEventHandlerAsync<GenerateTicketSaleViewer>(Queues.SELL_TICKET_VIEWER, async (request) =>
                 {
                     _logger.LogInformation($"Received request to generate ticket viewer and ticket sale {request.IdUser}");
                     using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
-                    var generateTicketService = scope.ServiceProvider.GetRequiredService<IGenerateTicket>();
-                    var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
-                    var ticketSaleService = scope.ServiceProvider.GetRequiredService<IRepository<TicketSales>>();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
+                    await handler.GenerateTicketSaleViewer(request);
+                });
 
-                    using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-                    try
-                    {
-                        var ticket = await generateTicketService.GenerateTicket(TicketType.VIEWER, request.IdMatch, false, TicketPrices.VIEWER);
-                        //update ticket status
-                        ticket.Status = TicketStatus.ACTIVE;
-                        await ticketService.AddAsync(ticket);
-                        //create sale ticket
-                        var ticketSale = new TicketSales
-                        {
-                            IdTicket = ticket.Id,
-                            IdUser = request.IdUser,
-                            IdTransaction = request.IdTransaction
-                        };
+                await RegisterEventHandlerAsync<int>(Queues.CHANGE_TICKETS_PARTICIPANT_USED, async (idTournament) =>
+                {
+                    _logger.LogInformation($"Received request to inactivate particpant tickets");
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
-                        await ticketSaleService.AddAsync(ticketSale);
+                    await handler.ChangeParticipantTicketsStatus(idTournament, TicketStatus.USED);
+                });
 
-                        await dbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
-                        var email = new EmailNotificationRequest
-                        {
-                            IdUser = request.IdUser,
-                            Subject = "Ticket Info",
-                            Body = $"This is the body viewer with the code: {ticket.Code}"
-                        };
-                        await PublishEventAsync<EmailNotificationRequest>(email, Queues.SEND_EMAIL_NOTIFICATION);
-                    }
-                    catch (Exception ex)
-                    {
+                await RegisterEventHandlerAsync<int>(Queues.CHANGE_TICKETS_VIEWERS_USED, async (idmatch) =>
+                {
+                    _logger.LogInformation($"Received request to inactivate viewers tickets");
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var handler = scope.ServiceProvider.GetRequiredService<TicketsHandler>();
 
-                        _logger.LogError($"Error assigning ticket sale: {ex.Message}");
-                        await transaction.RollbackAsync();
-                    }
+                    await handler.ChangeViewersTicketsStatus(idmatch, TicketStatus.USED);
                 });
             });
 
@@ -224,12 +112,31 @@ namespace TicketsMS.Infrastructure.EventBus
                 var ticketService = scope.ServiceProvider.GetRequiredService<IRepository<Tickets>>();
                 var ticketInfo = await ticketService.GetByIdAsync(idInfo);
 
+                if(ticketInfo == null) return new GetTicketInfoResponse();
+
                 return new GetTicketInfoResponse
                 {
                     IdTicket = ticketInfo.Id,
                     Status = ticketInfo.Status,
-                    Type = ticketInfo.Type
+                    Type = ticketInfo.Type,
+                    IdTournament = ticketInfo?.IdTournament?? 0,
                 };
+            });
+
+            RegisterQueueHandler<GetTicketUserTournament, bool>(Queues.VALIDATE_USER_HAS_TICKETS_TOURNAMENT, async (payload) =>
+            {
+                _logger.LogInformation($"Received request to validate user has tickets for tournament");
+                using var scope = _serviceScopeFactory.CreateScope();
+
+                var context = scope.ServiceProvider.GetRequiredService<TicketDbContext>();
+                var ticketSalesInfo = await (from ts in context.TicketSales
+                                             join t in context.Tickets on ts.IdTicket equals t.Id
+                                             where ts.IdUser == payload.IdUser && t.IdTournament == payload.IdTournament 
+                                             select t).ToListAsync();
+                //if user has already ticket sales confirmed for tournament
+                if (ticketSalesInfo.Any()) return true;
+
+                return false;
 
             });
         }
@@ -366,28 +273,6 @@ namespace TicketsMS.Infrastructure.EventBus
             {
                 Task.Run(InitializeAsync).GetAwaiter().GetResult();
             }
-        }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                if (_connection == null || !_connection.IsOpen || _channel == null || _channel.IsClosed) await InitializeAsync();
-
-                try
-                {
-                    await Task.Delay(500, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    await InitializeAsync();
-                }
-            }
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (_connection != null) await _connection.DisposeAsync();
-            if (_channel != null) await _channel.DisposeAsync();
         }
     }
 }

@@ -4,13 +4,45 @@
         <name>TicketsMS</name>
     </assembly>
     <members>
+        <member name="M:TicketsMS.API.Controllers.TicketController.GetAvailableTickets(System.Int32)">
+            <summary>
+            Get tickets by id tournament
+            </summary>
+            <param name="ticketType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TicketsMS.API.Controllers.TicketController.UseTicket(TicketsMS.Application.DTOs.Request.UseTicketRequest)">
+            <summary>
+            This method is in charge to use a ticket for a event
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="M:TicketsMS.API.Controllers.TicketController.GetTicketByUser(System.Int32)">
             <summary>
-            
+                Get tickets participant by userid
             </summary>
             <param name="userId"></param>
-            <returns></returns>
-            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="P:TicketsMS.Application.DTOs.Request.UseTicketRequest.Code">
+            <summary>
+            Ticket code 
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.DTOs.Request.UseTicketRequest.IdUser">
+            <summary>
+            Use who will be using ticket
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.DTOs.Request.UseTicketRequest.IdMatch">
+            <summary>
+            Match where ticket is being used
+            </summary>
+        </member>
+        <member name="P:TicketsMS.Application.DTOs.Request.UseTicketRequest.Type">
+            <summary>
+            Ticket type(PARTICIPANT, VIEWER)
+            </summary>
         </member>
         <member name="P:TicketsMS.Application.Messages.Request.EmailNotificationRequest.IdUser">
             <summary>
@@ -49,11 +81,36 @@
         </member>
         <member name="M:TicketsMS.Application.Services.TicketService.GenerateTicketViewer(System.Int32,System.Boolean,System.Decimal)">
             <summary>
-                This methods 
+                This method generates a ticket for viewer
             </summary>
             <param name="idMatch"></param>
             <param name="isFree"></param>
             <param name="price"></param>
+            <returns></returns>
+            <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
+        </member>
+        <member name="M:TicketsMS.Application.Services.TicketService.ValidateTicket(System.Int32,System.String)">
+            <summary>
+            VAlidates that a provided ticket is valid and it belongs to the owner
+            </summary>
+            <param name="idUser"></param>
+            <param name="codeTicket"></param>
+            <returns></returns>
+            <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
+        </member>
+        <member name="M:TicketsMS.Application.Services.TicketService.UpdateTicketStatus(System.Int32,TicketsMS.Domain.Enums.TicketStatus)">
+            <summary>
+            Update a ticket status for a provided id
+            </summary>
+            <param name="idTicket"></param>
+            <param name="newStatus"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TicketsMS.Application.Services.TicketService.CreateTicketAsync(TicketsMS.Domain.Entities.Tickets)">
+            <summary>
+            Create a ticket in db, it could synchronous o asynchronous creation
+            </summary>
+            <param name="ticketRequest"></param>
             <returns></returns>
             <exception cref="T:TicketsMS.Domain.Exceptions.BusinessRuleException"></exception>
         </member>
@@ -76,16 +133,16 @@
             <param name="handler"></param>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="T:TicketsMS.Migrations.init1">
+        <member name="T:TicketsMS.Migrations.init">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:TicketsMS.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:TicketsMS.Migrations.init1.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:TicketsMS.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>
