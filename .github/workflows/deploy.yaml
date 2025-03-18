@@ -22,3 +22,15 @@ jobs:
               run: dotnet build ./TicketsMS.csproj --no-restore
             - name: "Run Tests ✅✅"
               run: dotnet test ./TicketsMS.csproj --no-build --verbosity normal
+    renderDeploy:
+        name: "Deploy🚀🚀"
+        needs: [build]
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: "Deploy to render"
+            uses: johnbeynon/render-deploy-action@v0.0.8
+            with:
+              service-id: ${{ secrets.RENDER_SERVICE_ID }}
+              api-key: ${{ secrets.RENDER_API_KEY }}
+              wait-for-success: true
