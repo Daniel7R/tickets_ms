@@ -11,10 +11,11 @@
             <param name="ticketType"></param>
             <returns></returns>
         </member>
-        <member name="M:TicketsMS.API.Controllers.TicketController.UseTicket(TicketsMS.Application.DTOs.Request.UseTicketRequest)">
+        <member name="M:TicketsMS.API.Controllers.TicketController.UseTicket(System.String,TicketsMS.Application.DTOs.Request.UseTicketRequest)">
             <summary>
             This method is in charge to use a ticket for a event
             </summary>
+            <param name="_">api key header</param>
             <param name="request"></param>
             <returns></returns>
         </member>

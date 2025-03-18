@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "6PaBmQJYV0SCM5WqkgpqIsjpgtxoI+Wy5ha1wI8BegY=",
+  "Hash": "YLi2Sfwd+BXg6/0zpIZuDtmMS4QpDXns4ouFZOlSmMk=",
   "Source": "TicketsMS",
   "BasePath": "_content/TicketsMS",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

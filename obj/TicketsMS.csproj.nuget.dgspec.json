@@ -1,28 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dr734\\OneDrive\\Escritorio\\assessment\\E-Sports\\TicketsMS\\TicketsMS.csproj": {}
+    "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\TicketsMS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dr734\\OneDrive\\Escritorio\\assessment\\E-Sports\\TicketsMS\\TicketsMS.csproj": {
+    "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\TicketsMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dr734\\OneDrive\\Escritorio\\assessment\\E-Sports\\TicketsMS\\TicketsMS.csproj",
+        "projectUniqueName": "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\TicketsMS.csproj",
         "projectName": "TicketsMS",
-        "projectPath": "C:\\Users\\dr734\\OneDrive\\Escritorio\\assessment\\E-Sports\\TicketsMS\\TicketsMS.csproj",
-        "packagesPath": "C:\\Users\\dr734\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dr734\\OneDrive\\Escritorio\\assessment\\E-Sports\\TicketsMS\\obj\\",
+        "projectPath": "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\TicketsMS.csproj",
+        "packagesPath": "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\dr734\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\daniel.riverar_pragm\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -40,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -120,7 +118,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
