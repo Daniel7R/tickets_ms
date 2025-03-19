@@ -9,6 +9,7 @@ using DotNetEnv;
 using TicketsMS.Application.Handlers;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args); 
@@ -51,6 +52,8 @@ builder.Services.AddSingleton<IEventBusProducer, EventBusProducer>();
 builder.Services.AddHostedService<EventBusConsumer>();
 builder.Services.AddHostedService<EventBusProducer>();
 
+Metrics.SuppressDefaultMetrics();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,9 +62,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRouting();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseHttpMetrics();
+app.UseEndpoints(endpoints => {
+    endpoints.MapMetrics();
+});
+
 
 app.MapControllers();
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PwWMQ+r48Jo=",
+  "dgSpecHash": "tRTo3VOXbqg=",
   "success": true,
   "projectFilePath": "C:\\Users\\daniel.riverar_pragm\\Desktop\\Ms\\tickets_ms\\TicketsMS.csproj",
   "expectedPackageFiles": [
@@ -34,8 +34,10 @@
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.1\\microsoft.extensions.dependencyinjection.9.0.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.1\\microsoft.extensions.dependencyinjection.abstractions.9.0.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.dependencymodel\\9.0.1\\microsoft.extensions.dependencymodel.9.0.1.nupkg.sha512",
+    "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.http\\3.1.0\\microsoft.extensions.http.3.1.0.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.logging\\9.0.1\\microsoft.extensions.logging.9.0.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.1\\microsoft.extensions.logging.abstractions.9.0.1.nupkg.sha512",
+    "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.objectpool\\7.0.0\\microsoft.extensions.objectpool.7.0.0.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.options\\9.0.1\\microsoft.extensions.options.9.0.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.1\\microsoft.extensions.primitives.9.0.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\microsoft.net.test.sdk\\17.0.0\\microsoft.net.test.sdk.17.0.0.nupkg.sha512",
@@ -53,6 +55,8 @@
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\npgsql\\9.0.2\\npgsql.9.0.2.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\9.0.3\\npgsql.entityframeworkcore.postgresql.9.0.3.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\nuget.frameworks\\5.0.0\\nuget.frameworks.5.0.0.nupkg.sha512",
+    "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\prometheus-net\\8.2.1\\prometheus-net.8.2.1.nupkg.sha512",
+    "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\prometheus-net.aspnetcore\\8.2.1\\prometheus-net.aspnetcore.8.2.1.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\rabbitmq.client\\7.1.0\\rabbitmq.client.7.1.0.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\daniel.riverar_pragm\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
