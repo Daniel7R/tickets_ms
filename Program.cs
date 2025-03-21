@@ -10,6 +10,7 @@ using TicketsMS.Application.Handlers;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using Prometheus;
+using TicketsMS.Infrastructure.Auth;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args); 
@@ -53,6 +54,9 @@ builder.Services.AddHostedService<EventBusConsumer>();
 builder.Services.AddHostedService<EventBusProducer>();
 
 Metrics.SuppressDefaultMetrics();
+
+builder.AddAppAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
