@@ -32,9 +32,10 @@ namespace TicketsMS.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TicketsDetailsDTO>> GetTicketsByUser(int idUser)
+        public async Task<IEnumerable<TicketsDetailsDTO>> GetTicketsByUser(int idUser, int idRequester)
         {
 
+            if(idUser != idRequester) throw new BusinessRuleException("User can't request another person tickets");
             var ticketsUser = await _customQueriesRepo.GetTicketsByUser(idUser);
 
             var idsTorneos = ticketsUser.Select(x => x.IdTournament ?? 0).ToList();

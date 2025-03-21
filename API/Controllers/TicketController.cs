@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel;
+using System.Security.Claims;
 using TicketsMS.Application.DTOs.Request;
 using TicketsMS.Application.DTOs.Response;
 using TicketsMS.Application.Interfaces;
@@ -52,7 +54,7 @@ namespace TicketsMS.API.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("use", Name ="UseTicket")]
+        [Route("use", Name = "UseTicket")]
         [ApiKeyFilter]
         public async Task<IActionResult> UseTicket([FromHeader(Name = "x-api-key"), BindRequired] string _, [FromBody] UseTicketRequest request)
         {
@@ -63,7 +65,8 @@ namespace TicketsMS.API.Controllers
                 response.Result = isValid;
                 response.Message = "Ticket is valid";
                 return Ok(response);
-            } catch(BusinessRuleException br)
+            }
+            catch (BusinessRuleException br)
             {
                 response.Message = br.Message;
                 return BadRequest(response);
@@ -74,17 +77,39 @@ namespace TicketsMS.API.Controllers
         ///     Get tickets participant by userid
         /// </summary>
         /// <param name="userId"></param>
+        [Authorize]
         [HttpGet]
         [Route("{userId}")]
         public async Task<IActionResult> GetTicketByUser(int userId)
         {
             var response = new ResponseDTO<IEnumerable<TicketsDetailsDTO>>();
+            try
+            {
+                var user = ExtractUserId();
+                if (string.IsNullOrEmpty(user)) throw new BusinessRuleException("Invalid User");
+                int idUser = Convert.ToInt32(user);
 
-            var ticketes = await _ticketService.GetTicketsByUser(userId);
+                var ticketes = await _ticketService.GetTicketsByUser(userId, idUser);
 
-            response.Result = ticketes;
-            //validate if the user is equals to the provided in token
-            return Ok(response);
+                response.Result = ticketes;
+                //validate if the user is equals to the provided in token
+                return Ok(response);
+
+            }
+            catch (BusinessRuleException ex)
+            {
+                response.Message=ex.Message;
+                return BadRequest(response);
+            }
+        }
+
+        private string? ExtractUserId()
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                     ?? User.FindFirst("sub")?.Value;
+
+            return userId;
         }
     }
 }
