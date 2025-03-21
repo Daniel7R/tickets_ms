@@ -461,3 +461,11 @@ C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\TicketsMS.g
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\ref\TicketsMS.dll
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Prometheus.NetStandard.dll
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Prometheus.AspNetCore.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
