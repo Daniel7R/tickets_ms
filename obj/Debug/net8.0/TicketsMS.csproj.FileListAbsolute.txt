@@ -459,3 +459,5 @@ C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\TicketsMS.x
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\TicketsMS.pdb
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\TicketsMS.genruntimeconfig.cache
 C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\obj\Debug\net8.0\ref\TicketsMS.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Prometheus.NetStandard.dll
+C:\Users\daniel.riverar_pragm\Desktop\Ms\tickets_ms\bin\Debug\net8.0\Prometheus.AspNetCore.dll
